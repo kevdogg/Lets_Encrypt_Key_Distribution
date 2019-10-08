@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+SELF_DIR=`git rev-parse --show-toplevel`
+DATABASE=$SELF_DIR/.permissions
+
+echo -n "Restoring permissions..."
+
+IFS_OLD=$IFS; IFS=$'\n'
+while read -r LINE || [[ -n "$LINE" ]];
+do
+   ITEM=`echo $LINE | cut -d ";" -f 1`
+   PERMISSIONS=`echo $LINE | cut -d ";" -f 2`
+   USER=`echo $LINE | cut -d ";" -f 3`
+   GROUP=`echo $LINE | cut -d ";" -f 4`
+
+   # Set the file/directory permissions
+   chmod $PERMISSIONS $ITEM
+
+   # Set the file/directory owner and groups
+   chown $USER:$GROUP $ITEM
+
+done < $DATABASE
+IFS=$IFS_OLD
+
+echo "OK"
+
+exit 0
+
