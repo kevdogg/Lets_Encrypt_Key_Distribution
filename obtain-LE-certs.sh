@@ -45,8 +45,9 @@ set -euf -o pipefail
 ## Server where Certs will be Obtained -- LAN SERVER
 SERVER="10.0.1.158"
 SERVER_PATH="/certs/fullchain.pem"
+SERVER_DOMAIN="<DOMAIN NAME HERE>"
 ## Local Directory where certs are located
-CERTS_DIR="/usr/local/etc/letsencrypt/live/gohilton.com"
+CERTS_DIR="/usr/local/etc/letsencrypt/live/${SERVER_DOMAIN}"
 OS=`uname`
 ## Please specify service name here:
   ## If apache web server SERVICE_NAME="apache"
