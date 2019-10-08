@@ -30,6 +30,26 @@
 #        </RequireAll>
 #   </Directory>
 
+#### VARIABLES SECTION -- PLEASE MODIFY
+
+## Server Variables
+## Server where Certs will be Obtained -- LAN SERVER
+SERVER="10.0.1.158"
+SERVER_PATH="/certs/fullchain.pem"
+SERVER_DOMAIN="<DOMAIN NAME HERE>"
+
+## Local Variables
+## Local Directory where certs are located
+CERTS_DIR="/usr/local/etc/letsencrypt/live/${SERVER_DOMAIN}"
+OS=`uname`
+## Please specify service name here:
+  ## If apache web server SERVICE_NAME="apache"
+  ## If other service other than apache use service name -- ie SERVICE_NAME="xo-server.service"
+SERVICE_NAME="xo-server.service"
+
+### END VARIABLE SECTION
+
+
 get_sha256sum() {
 	cat $1 | shasum -a 256 | head -c 64
 }
@@ -41,18 +61,6 @@ error(){
 
 set -euf -o pipefail
 
-# Variables
-## Server where Certs will be Obtained -- LAN SERVER
-SERVER="10.0.1.158"
-SERVER_PATH="/certs/fullchain.pem"
-SERVER_DOMAIN="<DOMAIN NAME HERE>"
-## Local Directory where certs are located
-CERTS_DIR="/usr/local/etc/letsencrypt/live/${SERVER_DOMAIN}"
-OS=`uname`
-## Please specify service name here:
-  ## If apache web server SERVICE_NAME="apache"
-  ## If other service other than apache use service name -- ie SERVICE_NAME="xo-server.service"
-SERVICE_NAME="xo-server.service"
 
 # Download the latest certificate to a temporarily location so we can check validity
 curl -s -k -o /tmp/fullchain.pem "https://${SERVER}${SERVER_PATH}"
