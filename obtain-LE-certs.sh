@@ -30,7 +30,7 @@
 #        </RequireAll>
 #   </Directory>
 
-#### VARIABLES SECTION -- PLEASE MODIFY
+#### VARIABLES SECTION -- PLEASE MODIFY#
 
 ## Server Variables
 ## Server where Certs will be Obtained -- LAN SERVER
