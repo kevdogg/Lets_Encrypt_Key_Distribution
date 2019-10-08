@@ -36,7 +36,7 @@
 ## Server where Certs will be Obtained -- LAN SERVER
 SERVER="10.0.1.158"
 SERVER_PATH="/certs/fullchain.pem"
-SERVER_DOMAIN="<DOMAIN NAME HERE>"
+#SERVER_DOMAIN="example.com"
 
 ## Local Variables
 ## Local Directory where certs are located
@@ -49,6 +49,7 @@ SERVICE_NAME="xo-server.service"
 
 ### END VARIABLE SECTION
 
+## FUNCTION SECTION
 
 get_sha256sum() {
 	cat $1 | shasum -a 256 | head -c 64
@@ -59,8 +60,22 @@ error(){
 	exit 1
 }
 
+## END FUNCTION SECTION
+
+## MAIN
+
 set -euf -o pipefail
 
+##Valididty Check for CERTS_DIR
+if [ ! -d "${CERTS_DIR:+$CERTS_DIR/}" ] ##If $CERTS_DIR IS NOT a directory or symbolic link
+then
+   CERTS_DIR="/etc/letsencrypt/live/${SERVER_DOMAIN}"
+   if [ ! -d "${CERTS_DIR:+$CERTS_DIR/}" ]
+   then
+	echo "Can't find certificate directory on local host...Exiting"
+	exit 1
+   fi	   
+fi
 
 # Download the latest certificate to a temporarily location so we can check validity
 curl -s -k -o /tmp/fullchain.pem "https://${SERVER}${SERVER_PATH}"
@@ -119,8 +134,8 @@ then
 	        #echo "In restart BSD service"
            fi
      fi
-#else 
-#     echo "SHA256 sums for fullchain.pem's match"
+else 
+     echo "Your current ${CERTS_DIR}/fullchain.pem is up-to-date. No restart of services are needed"
 fi
 
 echo "Done"
