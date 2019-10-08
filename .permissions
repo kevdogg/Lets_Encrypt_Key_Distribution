@@ -1,3 +1,5 @@
+.permissions;664;kevdog;kevdog
 README.md;664;kevdog;kevdog
 obtain-LE-certs.sh;744;root;root
+pre-commit;775;kevdog;kevdog
 .;775;kevdog;kevdog
