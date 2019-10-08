@@ -78,7 +78,8 @@ then
 fi
 
 # Download the latest certificate to a temporarily location so we can check validity
-curl -s -k -o /tmp/fullchain.pem "https://${SERVER}${SERVER_PATH}"
+#curl -s -k -R -o /tmp/fullchain.pem "https://${SERVER}${SERVER_PATH}"
+wget -S -q --no-check-certificate -O /tmp/fullchain.pem "https://${SERVER}${SERVER_PATH}" >>/dev/null 2>>/dev/null
 
 # Verify the certificate is valid for our existing key (should be)
 MOD_CRT=$(openssl x509 -noout -modulus -in /tmp/fullchain.pem | openssl md5)
@@ -110,13 +111,16 @@ then
      echo "New certificate: $(openssl x509 -in /tmp/fullchain.pem -noout -subject -dates -issuer)"
 
      DATE=`date +"%m-%d-%Y-%T"`
-     mv ${CERTS_DIR}/fullchain.pem ${CERTS_DIR}/fullchain-${DATE}.pem
-     cp /tmp/fullchain.pem ${CERTS_DIR}/fullchain.pem
+     if [ -f "${CERTS_DIR}/fullchain.pem" ]; then
+        mv ${CERTS_DIR}/fullchain.pem ${CERTS_DIR}/fullchain-${DATE}.pem
+     fi
+     cp -p /tmp/fullchain.pem ${CERTS_DIR}/fullchain.pem
      rm /tmp/fullchain.pem
 
      if [ $SERVICE_NAME == "apache" ]
      then
           apachectl -k graceful
+	  echo -n "Restarting Service:${SERVICE_NAME}..."
      elif [[ "${SERVICE_NAME}" =~ \.service$ ]]
      then 
 	   if [ $OS == "Linux" ]
@@ -124,13 +128,14 @@ then
                 systemctl stop ${SERVICE_NAME}
                 sleep 20
                 systemctl start ${SERVICE_NAME}
-                echo -n "Restarting xo server..."
+		echo -n "Restarting Service:${SERVICE_NAME}..."
                 #echo "In restart Linux service"
            elif [ $OS == "FreeBSD" ]
 	   then
 	        service ${SERVICE_NAME} stop
 	        sleep 20
 	        service ${SERVICE_NAME} start
+		echo -n "Restarting Service:${SERVICE_NAME}..."
 	        #echo "In restart BSD service"
            fi
      fi
