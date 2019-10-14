@@ -3,5 +3,6 @@ README.md;664;kevdog;kevdog
 fullchain-cert-distribute.sh;764;root;root
 obtain-LE-certs.sh;744;root;root
 post-checkout;775;kevdog;kevdog
+post-merge;775;kevdog;kevdog
 pre-commit;775;kevdog;kevdog
 .;775;kevdog;kevdog
