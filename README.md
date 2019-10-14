@@ -38,10 +38,10 @@ done
 ```
 
 ### Further Explanation
- - Apache / Let's Encrypt Host - Through root cron job - run's certbot renew every 12 hours calling --deploy-hook if certificate is updated
+ - Apache / Let's Encrypt Host - Through root cron job - run's certbot renew every 12 hours calling --deploy-hook if certificate is updated (**Note - Defining Enviromental Variables such as PATH within a crontab is valid when using Vixie Cron implementations (FreeBSD, Debian, Ubuntu) -- others use cronie (Arch, RedHat) where syntax is different: https://stackoverflow.com/questions/2229825/where-can-i-set-environment-variables-that-crontab-will-use**)
  ```
  PATH=/sbin:/bin:/usr/bin:/usr/local/bin
- 0 */12 * * * python2.7 -c 'import random; import time; time.sleep(random.random() * 3600)' && certbot certonly --cert-name example.com --reuse-key  --dns-cloudflare --dns-cloudflare-credentials /usr/local/etc/letsencrypt/cloudflare_used_by_certbot.ini
+ 0 */12 * * * python2.7 -c 'import random; import time; time.sleep(random.random() * 3600)' && certbot renew --cert-name example.com --reuse-key  --dns-cloudflare --dns-cloudflare-credentials /usr/local/etc/letsencrypt/cloudflare_used_by_certbot.ini --deploy-hook /root/bin/renew.sh
  ```
  
  - Every LAN Machine that requires use of certificates (i.e. Internal Apache Server, Xen Orchestra Server, pfSense) would run this script through a root cronjob every 12 hours to update the fullchain.pem file.  The **privkey.pem** file is not distributed with this script and it's assumed this file already installed on each LAN machine requiring a copy of the fullchain.pem certificate.
