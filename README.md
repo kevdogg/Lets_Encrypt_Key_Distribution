@@ -24,6 +24,10 @@ set -e
 for domain in $RENEWED_DOMAINS; do
    # Just an example, you can use any non-sensitive storage medium you want
   cp -rL "$RENEWED_LINEAGE/fullchain.pem" /usr/local/www/main/certs/
+  
+  SHA256SUM=$(trim "$(openssl dgst -sha256 "${WebDirectoryDestination}/${FullChainFile}" | cut -d"=" -f2)")
+  echo "Creating SHA256 digest for ${FullChainFile}"
+  printf "%s" "${SHA256SUM}" > "${WebDirectoryDestination}/${FullChainFile}.sha256"
 done
 ```
 ### Example Apache \<Virtual Host\> directive that would limit access to fullchain.pem file to LAN 
